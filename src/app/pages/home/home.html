@@ -1,0 +1,175 @@
+<div class="min-h-screen bg-slate-50 px-4 py-6 sm:py-10">
+    <div class="mx-auto w-full max-w-4xl">
+        <!-- <nav class="mb-6" aria-label="Navegação principal">
+            <ul class="flex flex-wrap items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                <li>
+                    <a class="block rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100" routerLink="/budget">Orçamento</a>
+                </li>
+                <li>
+                    <a class="block rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100" routerLink="/eletric">Quadro elétrico</a>
+                </li>
+            </ul>
+        </nav> -->
+
+        <main class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
+            <header class="mb-8 text-center">
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Gerar orçamento</h1>
+                <p class="mt-2 text-sm text-slate-600">Preencha os dados da empresa, do cliente e dos serviços.</p>
+            </header>
+
+            <div class="space-y-6">
+                <section class="rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-slate-900">Dados da empresa</h2>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="companyName" class="mb-1 block text-sm font-medium text-slate-700">Nome da empresa</label>
+                            <input id="companyName" type="text" [(ngModel)]="request.companyRequest.companyName" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                        <div>
+                            <label for="companyTelephone" class="mb-1 block text-sm font-medium text-slate-700">Telefone da empresa</label>
+                            <input id="companyTelephone" type="tel" inputmode="numeric" maxlength="15" [ngModel]="companyTelephoneInput" (ngModelChange)="onCompanyTelephoneInput($event)" (beforeinput)="preventNonDigitInput($event)" (paste)="preventInvalidPhonePaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="companyCnpj" class="mb-1 block text-sm font-medium text-slate-700">CNPJ da empresa</label>
+                            <input id="companyCnpj" type="text" pattern="[A-Za-z0-9]*" maxlength="18" [ngModel]="companyCnpjInput" (ngModelChange)="onCompanyCnpjInput($event)" (beforeinput)="preventInvalidCnpjInput($event)" (paste)="preventInvalidCnpjPaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-slate-900">Dados do cliente</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="clientType" class="mb-1 block text-sm font-medium text-slate-700">Tipo de cliente</label>
+                            <div class="relative w-full sm:max-w-sm">
+                                <select id="clientType" [(ngModel)]="request.clientRequest.type" class="w-full appearance-none rounded-lg border border-slate-300 bg-white px-3 py-2.5 pr-10 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    <option value="PF">Pessoa Física</option>
+                                    <option value="PJ">Pessoa Jurídica</option>
+                                </select>
+                                <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.22 7.47a.75.75 0 0 1 1.06 0L10 11.19l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                        @switch (request.clientRequest.type) {
+                            @case ('PF') {
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <div>
+                                        <label for="clientName" class="mb-1 block text-sm font-medium text-slate-700">Nome do cliente</label>
+                                        <input id="clientName" type="text" [(ngModel)]="request.clientRequest.clientName" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    </div>
+                                    <div>
+                                        <label for="clientTelephone" class="mb-1 block text-sm font-medium text-slate-700">Telefone do cliente</label>
+                                        <input id="clientTelephone" type="tel" inputmode="numeric" maxlength="15" [ngModel]="clientTelephoneInput" (ngModelChange)="onClientTelephoneInput($event)" (beforeinput)="preventNonDigitInput($event)" (paste)="preventInvalidPhonePaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="clientCpf" class="mb-1 block text-sm font-medium text-slate-700">CPF do cliente</label>
+                                        <input id="clientCpf" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="14" [ngModel]="cpfInput" (ngModelChange)="onCpfInput($event)" (beforeinput)="preventNonDigitInput($event)" (paste)="preventInvalidDocumentPaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    </div>
+                                </div>
+                            }
+                            @case ('PJ') {
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <div>
+                                        <label for="clientCompanyName" class="mb-1 block text-sm font-medium text-slate-700">Nome da empresa</label>
+                                        <input id="clientCompanyName" type="text" [(ngModel)]="request.clientRequest.companyName" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    </div>
+                                    <div>
+                                        <label for="clientCompanyTelephone" class="mb-1 block text-sm font-medium text-slate-700">Telefone da empresa</label>
+                                        <input id="clientCompanyTelephone" type="tel" inputmode="numeric" maxlength="15" [ngModel]="clientTelephoneInput" (ngModelChange)="onClientTelephoneInput($event)" (beforeinput)="preventNonDigitInput($event)" (paste)="preventInvalidPhonePaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="clientCnpj" class="mb-1 block text-sm font-medium text-slate-700">CNPJ da empresa</label>
+                                        <input id="clientCnpj" type="text" pattern="[A-Za-z0-9]*" maxlength="18" [ngModel]="clientCnpjInput" (ngModelChange)="onClientCnpjInput($event)" (beforeinput)="preventInvalidCnpjInput($event)" (paste)="preventInvalidCnpjPaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </section>
+
+                <section #itemForm class="scroll-mt-4 rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-slate-900">Itens</h2>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <label for="itemDescription" class="mb-1 block text-sm font-medium text-slate-700">Descrição</label>
+                            <input id="itemDescription" type="text" [(ngModel)]="newItem.itemDescription" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                        <div>
+                            <label for="itemQuantity" class="mb-1 block text-sm font-medium text-slate-700">Quantidade</label>
+                            <input id="itemQuantity" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="0" [ngModel]="newItem.quantity || ''" (ngModelChange)="onItemQuantityInput($event)" (beforeinput)="preventNonDigitInput($event)" (paste)="preventNonDigitPaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                        <div>
+                            <label for="itemValue" class="mb-1 block text-sm font-medium text-slate-700">Valor unitário</label>
+                            <input id="itemValue" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="0,00" [ngModel]="itemValueInput" (ngModelChange)="onItemValueInput($event)" (beforeinput)="preventNonDigitInput($event)" (paste)="preventNonDigitPaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-center">
+                        <div class="flex w-full flex-col items-center gap-2">
+                            <button type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" (click)="addItem()">{{ editingItemIndex === null ? 'Adicionar item' : 'Salvar alterações' }}</button>
+                            <button *ngIf="editingItemIndex !== null" type="button" class="flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400" (click)="cancelItemEdit()">Cancelar edição</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-slate-900">Itens adicionados</h2>
+                    <div class="max-h-64 space-y-3 overflow-y-auto">
+                        <div *ngFor="let item of request.items; let i = index" class="grid grid-cols-1 gap-2 rounded-lg bg-slate-50 p-4 sm:grid-cols-2">
+                            <p class="break-words text-sm text-slate-700"><span class="font-medium text-slate-900">Descrição:</span> {{item.itemDescription}}</p>
+                            <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Quantidade:</span> {{item.quantity}}</p>
+                            <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Valor unitário:</span> {{formatCurrency(item.itemValue)}}</p>
+                            <div class="flex items-center justify-center gap-6 text-sm sm:justify-end">
+                                <button type="button" class="min-h-10 rounded px-3 text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400" (click)="removeItem(i)">Excluir</button>
+                                <button type="button" class="min-h-10 rounded px-3 text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" (click)="editItem(i)">Alterar</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section #laborForm class="scroll-mt-4 rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-slate-900">Mãos de obra</h2>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <label for="laborDescription" class="mb-1 block text-sm font-medium text-slate-700">Descrição</label>
+                            <input id="laborDescription" type="text" [(ngModel)]="newLabor.laborDescription" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="laborValue" class="mb-1 block text-sm font-medium text-slate-700">Valor</label>
+                            <input id="laborValue" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="0,00" [ngModel]="laborValueInput" (ngModelChange)="onLaborValueInput($event)" (beforeinput)="preventNonDigitInput($event)" (paste)="preventNonDigitPaste($event)" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-center">
+                        <div class="flex w-full flex-col items-center gap-2">
+                            <button type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" (click)="addLabor()">{{ editingLaborIndex === null ? 'Adicionar mão de obra' : 'Salvar alterações' }}</button>
+                            <button *ngIf="editingLaborIndex !== null" type="button" class="flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400" (click)="cancelLaborEdit()">Cancelar edição</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-slate-900">Mãos de obra adicionadas</h2>
+                    <div class="max-h-64 space-y-3 overflow-y-auto">
+                        <div *ngFor="let labor of request.labors; let i = index" class="grid grid-cols-1 gap-2 rounded-lg bg-slate-50 p-4 sm:grid-cols-2">
+                            <p class="break-words text-sm text-slate-700"><span class="font-medium text-slate-900">Descrição:</span> {{labor.laborDescription}}</p>
+                            <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Valor:</span> {{formatCurrency(labor.laborValue)}}</p>
+                            <div class="flex items-center justify-center gap-6 text-sm sm:col-span-2 sm:justify-end">
+                                <button type="button" class="min-h-10 rounded px-3 text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400" (click)="removeLabor(i)">Excluir</button>
+                                <button type="button" class="min-h-10 rounded px-3 text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" (click)="editLabor(i)">Alterar</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <label for="observation" class="mb-2 block text-lg font-semibold text-slate-900">Observação</label>
+                    <textarea id="observation" [(ngModel)]="request.observation" rows="4" class="h-32 w-full resize-none rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"></textarea>
+                </section>
+
+                <div class="flex justify-center pt-2">
+                    <button (click)="submitRequest()" type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">Gerar orçamento</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
