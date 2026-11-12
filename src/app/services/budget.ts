@@ -5,9 +5,9 @@ import { BudgetRequest } from '../models/budget-request';
 @Service()
 export class Budget {
     private readonly http = inject(HttpClient);
-    private readonly baseUrl = 'http://localhost:8080/api/generator/budget';
+    private readonly baseUrl = 'https://generator-bezk.onrender.com/';
 
     createBudget(request: BudgetRequest) {
-        return this.http.post(`${this.baseUrl}`, request, { responseType: 'blob' });
+        return this.http.post(`${this.baseUrl}/api/generator/budget`, request, { responseType: 'blob' });
     }
 }

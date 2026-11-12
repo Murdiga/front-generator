@@ -321,7 +321,7 @@ export class Home {
           ? this.request.clientRequest.clientName
           : this.request.clientRequest.companyName;
         a.href = url;
-        a.download = `orcamento_${clientName.replace(/ /g, '_')}.pdf`;
+        a.download = `Orçamento_${clientName.replace(/ /g, '_')}.pdf`;
         a.click();
         window.URL.revokeObjectURL(url);
         alert('Orçamento criado com sucesso!');
