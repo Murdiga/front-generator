@@ -14,7 +14,15 @@ describe('App', () => {
       imports: [App],
       providers: [
         provideRouter(routes),
-        { provide: ApiWarmup, useValue: { init: warmupInit } },
+        {
+          provide: ApiWarmup,
+          useValue: {
+            init: warmupInit,
+            isReady: () => true,
+            isChecking: () => false,
+            refreshIfStale: vi.fn(),
+          },
+        },
       ],
     })
       .compileComponents();

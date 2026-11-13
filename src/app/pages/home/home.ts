@@ -4,6 +4,7 @@ import { BudgetRequest, ItemRequest, LaborRequest } from '../../models/budget-re
 import { CommonModule } from '@angular/common';
 import { Budget } from '../../services/budget';
 import { finalize } from 'rxjs';
+import { ApiWarmup } from '../../services/api-warmup';
 
 @Component({
   imports: [ FormsModule, CommonModule],
@@ -297,13 +298,15 @@ export class Home {
   }
 
   private readonly budgetService = inject(Budget);
+  readonly apiWarmup = inject(ApiWarmup);
   shareableBudgetFile: File | null = null;
   hasGeneratedBudget = signal(false);
   isClearConfirmationOpen = signal(false);
   isProcessing = signal(false);
 
   submitRequest(): void {
-    if (this.isProcessing()) {
+    this.apiWarmup.refreshIfStale();
+    if (this.isProcessing() || !this.apiWarmup.isReady() || this.apiWarmup.isChecking()) {
       return;
     }
 

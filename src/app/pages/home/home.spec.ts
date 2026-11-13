@@ -4,6 +4,8 @@ import { Home } from './home';
 import { vi } from 'vitest';
 import { Subject } from 'rxjs';
 import { Budget } from '../../services/budget';
+import { ApiWarmup } from '../../services/api-warmup';
+import { signal } from '@angular/core';
 
 describe('Home', () => {
   let component: Home;
@@ -12,7 +14,17 @@ describe('Home', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Home],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ApiWarmup,
+          useValue: {
+            isReady: signal(true),
+            isChecking: signal(false),
+            refreshIfStale: vi.fn(),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Home);

@@ -12,6 +12,6 @@ export class Budget {
     }
 
     actuatorHealth() {
-        return this.http.get(`${this.baseUrl}/actuator/health`);
+        return this.http.get<{ status: string }>(`${this.baseUrl}/actuator/health`);
     }
 }

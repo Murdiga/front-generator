@@ -167,7 +167,7 @@
                 </section>
 
                 <div class="flex justify-center pt-2">
-                    <button (click)="submitRequest()" type="button" [disabled]="isProcessing()" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">{{ isProcessing() ? 'Processando...' : 'Gerar orçamento' }}</button>
+                    <button (click)="submitRequest()" type="button" [disabled]="isProcessing() || apiWarmup.isChecking() || !apiWarmup.isReady()" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">{{ apiWarmup.isChecking() || !apiWarmup.isReady() ? 'Conectando...' : isProcessing() ? 'Processando...' : 'Gerar orçamento' }}</button>
                 </div>
                 <div *ngIf="shareableBudgetFile" class="flex flex-col items-center gap-2" role="status">
                     <p class="text-sm text-slate-600">Orçamento pronto para compartilhar.</p>
