@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BudgetRequest, ItemRequest, LaborRequest } from '../../models/budget-request';
 import { CommonModule } from '@angular/common';
@@ -297,6 +297,8 @@ export class Home {
 
   private readonly budgetService = inject(Budget);
   shareableBudgetFile: File | null = null;
+  hasGeneratedBudget = signal(false);
+  isClearConfirmationOpen = signal(false);
 
   submitRequest(): void {
 
@@ -317,6 +319,7 @@ export class Home {
     this.shareableBudgetFile = null;
     this.budgetService.createBudget(this.request).subscribe({
       next: blob => {
+        this.hasGeneratedBudget.set(true);
         const clientName = this.request.clientRequest.type === 'PF'
           ? this.request.clientRequest.clientName
           : this.request.clientRequest.companyName;
@@ -338,6 +341,45 @@ export class Home {
       }
     });
 
+  }
+
+  openClearConfirmation(): void {
+    this.isClearConfirmationOpen.set(true);
+  }
+
+  closeClearConfirmation(): void {
+    this.isClearConfirmationOpen.set(false);
+  }
+
+  clearBudget(): void {
+    this.request = {
+      companyRequest: {
+        companyName: '',
+        telephoneCompany: '',
+        companyCnpj: null,
+      },
+      clientRequest: {
+        type: 'PF',
+        clientName: '',
+        telephoneNumber: '',
+        cpf: null,
+      },
+      items: [],
+      labors: [],
+      observation: '',
+    };
+
+    this.companyTelephoneInput = '';
+    this.clientTelephoneInput = '';
+    this.companyCnpjInput = '';
+    this.clientCnpjInput = '';
+    this.cpfInput = '';
+    this.cancelItemEdit();
+    this.cancelLaborEdit();
+    this.shareableBudgetFile = null;
+    this.hasGeneratedBudget.set(false);
+    this.isClearConfirmationOpen.set(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async shareBudget(): Promise<void> {

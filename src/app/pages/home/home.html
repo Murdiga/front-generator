@@ -173,7 +173,20 @@
                     <p class="text-sm text-slate-600">Orçamento pronto para compartilhar.</p>
                     <button (click)="shareBudget()" type="button" class="flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">Compartilhar orçamento</button>
                 </div>
+                <div *ngIf="hasGeneratedBudget()" class="flex justify-center">
+                    <button (click)="openClearConfirmation()" type="button" class="flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2">Limpar</button>
+                </div>
             </div>
         </main>
+    </div>
+
+    <div *ngIf="isClearConfirmationOpen()" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4" role="presentation">
+        <section class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="clear-confirmation-title">
+            <h2 id="clear-confirmation-title" class="text-lg font-semibold text-slate-900">Deseja apagar os dados e gerar um novo orçamento?</h2>
+            <div class="mt-6 flex justify-end gap-3">
+                <button (click)="clearBudget()" type="button" class="min-h-11 rounded-lg bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">Apagar</button>
+                <button (click)="closeClearConfirmation()" type="button" class="min-h-11 rounded-lg border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2">Cancelar</button>
+            </div>
+        </section>
     </div>
 </div>

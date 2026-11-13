@@ -63,6 +63,91 @@ describe('Home', () => {
     }
   });
 
+  it('should show the clear button only after a budget is generated', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).not.toContain('Limpar');
+
+    component.hasGeneratedBudget.set(true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Limpar');
+  });
+
+  it('should close the confirmation without changing the budget when cancelled', () => {
+    component.hasGeneratedBudget.set(true);
+    component.request.companyRequest.companyName = 'Empresa';
+    fixture.detectChanges();
+
+    const clearButton = (Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[])
+      .find(button => button.textContent?.trim() === 'Limpar');
+    expect(clearButton).toBeDefined();
+    clearButton?.click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Deseja apagar os dados e gerar um novo orçamento?');
+    const buttons = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
+    buttons.find(button => button.textContent?.trim() === 'Cancelar')?.click();
+    fixture.detectChanges();
+
+    expect(component.isClearConfirmationOpen()).toBe(false);
+    expect(component.request.companyRequest.companyName).toBe('Empresa');
+    expect(component.hasGeneratedBudget()).toBe(true);
+  });
+
+  it('should clear all budget fields and return to the top when confirmed', () => {
+    component.request = {
+      companyRequest: {
+        companyName: 'Empresa',
+        telephoneCompany: '1133334444',
+        companyCnpj: '12345678000199',
+      },
+      clientRequest: {
+        type: 'PJ',
+        companyName: 'Cliente',
+        telephoneNumber: '11999998888',
+        cnpj: '98765432000199',
+      },
+      items: [{ itemDescription: 'Material', quantity: 2, itemValue: 10 }],
+      labors: [{ laborDescription: 'Serviço', laborValue: 20 }],
+      observation: 'Observação',
+    };
+    component.companyTelephoneInput = '(11) 3333-4444';
+    component.clientTelephoneInput = '(11) 99999-8888';
+    component.companyCnpjInput = '12.345.678/0001-99';
+    component.clientCnpjInput = '98.765.432/0001-99';
+    component.hasGeneratedBudget.set(true);
+    component.shareableBudgetFile = new File(['pdf'], 'orcamento.pdf');
+    const scrollToTop = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    fixture.detectChanges();
+
+    const buttons = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
+    buttons.find(button => button.textContent?.trim() === 'Limpar')?.click();
+    fixture.detectChanges();
+    const modalButtons = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
+    modalButtons.find(button => button.textContent?.trim() === 'Apagar')?.click();
+
+    expect(component.request).toEqual({
+      companyRequest: { companyName: '', telephoneCompany: '', companyCnpj: null },
+      clientRequest: { type: 'PF', clientName: '', telephoneNumber: '', cpf: null },
+      items: [],
+      labors: [],
+      observation: '',
+    });
+    expect(component.companyTelephoneInput).toBe('');
+    expect(component.clientTelephoneInput).toBe('');
+    expect(component.companyCnpjInput).toBe('');
+    expect(component.clientCnpjInput).toBe('');
+    expect(component.cpfInput).toBe('');
+    expect(component.itemValueInput).toBe('');
+    expect(component.laborValueInput).toBe('');
+    expect(component.shareableBudgetFile).toBeNull();
+    expect(component.hasGeneratedBudget()).toBe(false);
+    expect(component.isClearConfirmationOpen()).toBe(false);
+    expect(scrollToTop).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    scrollToTop.mockRestore();
+  });
+
   it('should update an existing item without adding another one', () => {
     component.request.items = [
       { itemDescription: 'Cabo', quantity: 2, itemValue: 10 },
