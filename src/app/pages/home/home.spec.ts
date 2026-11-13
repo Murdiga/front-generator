@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Home } from './home';
 import { vi } from 'vitest';
+import { Subject } from 'rxjs';
+import { Budget } from '../../services/budget';
 
 describe('Home', () => {
   let component: Home;
@@ -20,6 +22,46 @@ describe('Home', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should disable the generate button while processing and restore it when complete', () => {
+    const response = new Subject<Blob>();
+    const createBudget = vi.spyOn(TestBed.inject(Budget), 'createBudget')
+      .mockReturnValue(response.asObservable());
+    const originalShare = Object.getOwnPropertyDescriptor(navigator, 'share');
+    Object.defineProperty(navigator, 'share', { configurable: true, value: vi.fn() });
+    component.request.clientRequest = {
+      type: 'PF',
+      clientName: 'Cliente',
+      telephoneNumber: '',
+      cpf: '12345678901',
+    };
+
+    try {
+      component.submitRequest();
+      fixture.detectChanges();
+
+      const button = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
+      const generateButton = button.find(item => item.textContent?.trim() === 'Processando...');
+      expect(generateButton?.disabled).toBe(true);
+      expect(createBudget).toHaveBeenCalledOnce();
+
+      component.submitRequest();
+      expect(createBudget).toHaveBeenCalledOnce();
+
+      response.next(new Blob(['pdf']));
+      response.complete();
+      fixture.detectChanges();
+
+      expect(component.isProcessing()).toBe(false);
+      expect(fixture.nativeElement.textContent).toContain('Gerar orçamento');
+    } finally {
+      if (originalShare) {
+        Object.defineProperty(navigator, 'share', originalShare);
+      } else {
+        Reflect.deleteProperty(navigator, 'share');
+      }
+    }
   });
 
   it('should share the generated PDF as a file', async () => {

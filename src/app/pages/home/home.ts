@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { BudgetRequest, ItemRequest, LaborRequest } from '../../models/budget-request';
 import { CommonModule } from '@angular/common';
 import { Budget } from '../../services/budget';
+import { finalize } from 'rxjs';
 
 @Component({
   imports: [ FormsModule, CommonModule],
@@ -299,8 +300,12 @@ export class Home {
   shareableBudgetFile: File | null = null;
   hasGeneratedBudget = signal(false);
   isClearConfirmationOpen = signal(false);
+  isProcessing = signal(false);
 
   submitRequest(): void {
+    if (this.isProcessing()) {
+      return;
+    }
 
     if (this.request.clientRequest.type === 'PF') {
       if (!this.request.clientRequest.cpf) {
@@ -317,7 +322,10 @@ export class Home {
     }
     
     this.shareableBudgetFile = null;
-    this.budgetService.createBudget(this.request).subscribe({
+    this.isProcessing.set(true);
+    this.budgetService.createBudget(this.request)
+      .pipe(finalize(() => this.isProcessing.set(false)))
+      .subscribe({
       next: blob => {
         this.hasGeneratedBudget.set(true);
         const clientName = this.request.clientRequest.type === 'PF'
