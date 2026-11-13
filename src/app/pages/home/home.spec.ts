@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Home } from './home';
+import { vi } from 'vitest';
 
 describe('Home', () => {
   let component: Home;
@@ -19,6 +20,47 @@ describe('Home', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should share the generated PDF as a file', async () => {
+    const file = new File(['pdf content'], 'Orçamento_Cliente.pdf', { type: 'application/pdf' });
+    const share = vi.fn().mockResolvedValue(undefined);
+    const originalShare = Object.getOwnPropertyDescriptor(navigator, 'share');
+    Object.defineProperty(navigator, 'share', { configurable: true, value: share });
+    component.shareableBudgetFile = file;
+
+    try {
+      await component.shareBudget();
+
+      expect(share).toHaveBeenCalledWith({ files: [file], title: file.name });
+      expect(component.shareableBudgetFile).toBeNull();
+    } finally {
+      if (originalShare) {
+        Object.defineProperty(navigator, 'share', originalShare);
+      } else {
+        Reflect.deleteProperty(navigator, 'share');
+      }
+    }
+  });
+
+  it('should keep the generated PDF available when sharing is cancelled', async () => {
+    const file = new File(['pdf content'], 'Orçamento_Cliente.pdf', { type: 'application/pdf' });
+    const share = vi.fn().mockRejectedValue(new DOMException('Share cancelled', 'AbortError'));
+    const originalShare = Object.getOwnPropertyDescriptor(navigator, 'share');
+    Object.defineProperty(navigator, 'share', { configurable: true, value: share });
+    component.shareableBudgetFile = file;
+
+    try {
+      await component.shareBudget();
+
+      expect(component.shareableBudgetFile).toBe(file);
+    } finally {
+      if (originalShare) {
+        Object.defineProperty(navigator, 'share', originalShare);
+      } else {
+        Reflect.deleteProperty(navigator, 'share');
+      }
+    }
   });
 
   it('should update an existing item without adding another one', () => {

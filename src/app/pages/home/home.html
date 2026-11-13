@@ -42,7 +42,7 @@
                         <div>
                             <label for="clientType" class="mb-1 block text-sm font-medium text-slate-700">Tipo de cliente</label>
                             <div class="relative w-full sm:max-w-sm">
-                                <select id="clientType" [(ngModel)]="request.clientRequest.type" class="w-full appearance-none rounded-lg border border-slate-300 bg-white px-3 py-2.5 pr-10 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                <select id="clientType" [(ngModel)]="request.clientRequest.type" class="w-full appearance-none rounded-lg border border-slate-300 bg-white px-3 py-2.5 pr-10 text-base text-slate-900 outline-none transition focus:border-blue-500 hover:cursor-pointer focus:ring-2 focus:ring-blue-100">
                                     <option value="PF">Pessoa Física</option>
                                     <option value="PJ">Pessoa Jurídica</option>
                                 </select>
@@ -106,8 +106,8 @@
                     </div>
                     <div class="mt-4 flex justify-center">
                         <div class="flex w-full flex-col items-center gap-2">
-                            <button type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" (click)="addItem()">{{ editingItemIndex === null ? 'Adicionar item' : 'Salvar alterações' }}</button>
-                            <button *ngIf="editingItemIndex !== null" type="button" class="flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400" (click)="cancelItemEdit()">Cancelar edição</button>
+                            <button type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer" (click)="addItem()">{{ editingItemIndex === null ? 'Adicionar item' : 'Salvar alterações' }}</button>
+                            <button *ngIf="editingItemIndex !== null" type="button" class="flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 cursor-pointer" (click)="cancelItemEdit()">Cancelar edição</button>
                         </div>
                     </div>
                 </section>
@@ -120,8 +120,8 @@
                             <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Quantidade:</span> {{item.quantity}}</p>
                             <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Valor unitário:</span> {{formatCurrency(item.itemValue)}}</p>
                             <div class="flex items-center justify-center gap-6 text-sm sm:justify-end">
-                                <button type="button" class="min-h-10 rounded px-3 text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400" (click)="removeItem(i)">Excluir</button>
-                                <button type="button" class="min-h-10 rounded px-3 text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" (click)="editItem(i)">Alterar</button>
+                                <button type="button" class="min-h-10 rounded px-3 text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 cursor-pointer" (click)="removeItem(i)">Excluir</button>
+                                <button type="button" class="min-h-10 rounded px-3 text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 cursor-pointer" (click)="editItem(i)">Alterar</button>
                             </div>
                         </div>
                     </div>
@@ -141,8 +141,8 @@
                     </div>
                     <div class="mt-4 flex justify-center">
                         <div class="flex w-full flex-col items-center gap-2">
-                            <button type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" (click)="addLabor()">{{ editingLaborIndex === null ? 'Adicionar mão de obra' : 'Salvar alterações' }}</button>
-                            <button *ngIf="editingLaborIndex !== null" type="button" class="flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400" (click)="cancelLaborEdit()">Cancelar edição</button>
+                            <button type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" (click)="addLabor()">{{ editingLaborIndex === null ? 'Adicionar mão de obra' : 'Salvar alterações' }}</button>
+                            <button *ngIf="editingLaborIndex !== null" type="button" class="flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400" (click)="cancelLaborEdit()">Cancelar edição</button>
                         </div>
                     </div>
                 </section>
@@ -154,8 +154,8 @@
                             <p class="break-words text-sm text-slate-700"><span class="font-medium text-slate-900">Descrição:</span> {{labor.laborDescription}}</p>
                             <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Valor:</span> {{formatCurrency(labor.laborValue)}}</p>
                             <div class="flex items-center justify-center gap-6 text-sm sm:col-span-2 sm:justify-end">
-                                <button type="button" class="min-h-10 rounded px-3 text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400" (click)="removeLabor(i)">Excluir</button>
-                                <button type="button" class="min-h-10 rounded px-3 text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" (click)="editLabor(i)">Alterar</button>
+                                <button type="button" class="min-h-10 rounded px-3 text-red-600 hover:bg-red-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400" (click)="removeLabor(i)">Excluir</button>
+                                <button type="button" class="min-h-10 rounded px-3 text-blue-600 hover:bg-blue-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" (click)="editLabor(i)">Alterar</button>
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,11 @@
                 </section>
 
                 <div class="flex justify-center pt-2">
-                    <button (click)="submitRequest()" type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">Gerar orçamento</button>
+                    <button (click)="submitRequest()" type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">Gerar orçamento</button>
+                </div>
+                <div *ngIf="shareableBudgetFile" class="flex flex-col items-center gap-2" role="status">
+                    <p class="text-sm text-slate-600">Orçamento pronto para compartilhar.</p>
+                    <button (click)="shareBudget()" type="button" class="flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">Compartilhar orçamento</button>
                 </div>
             </div>
         </main>

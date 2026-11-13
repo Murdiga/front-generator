@@ -296,6 +296,7 @@ export class Home {
   }
 
   private readonly budgetService = inject(Budget);
+  shareableBudgetFile: File | null = null;
 
   submitRequest(): void {
 
@@ -313,25 +314,63 @@ export class Home {
       }
     }
     
+    this.shareableBudgetFile = null;
     this.budgetService.createBudget(this.request).subscribe({
       next: blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
         const clientName = this.request.clientRequest.type === 'PF'
           ? this.request.clientRequest.clientName
           : this.request.clientRequest.companyName;
-        a.href = url;
-        a.download = `Orçamento_${clientName.replace(/ /g, '_')}.pdf`;
-        a.click();
-        window.URL.revokeObjectURL(url);
+        const fileName = `Orçamento_${clientName.replace(/ /g, '_')}.pdf`;
+        const file = new File([blob], fileName, { type: 'application/pdf' });
+
+        if (this.canShareBudgetFile(file)) {
+          this.shareableBudgetFile = file;
+          return;
+        }
+
+        this.downloadBudgetFile(file);
         alert('Orçamento criado com sucesso!');
       },
       error: err => {
+        this.shareableBudgetFile = null;
         console.error('Falha ao gerar orçamento', err);
         alert('Erro ao criar orçamento. Por favor, tente novamente.');
       }
     });
 
+  }
+
+  async shareBudget(): Promise<void> {
+    const file = this.shareableBudgetFile;
+    if (!file || typeof navigator.share !== 'function') {
+      return;
+    }
+
+    try {
+      await navigator.share({ files: [file], title: file.name });
+      this.shareableBudgetFile = null;
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return;
+      }
+
+      console.error('Falha ao compartilhar orçamento', err);
+      alert('Não foi possível compartilhar o orçamento. Tente novamente.');
+    }
+  }
+
+  private canShareBudgetFile(file: File): boolean {
+    return typeof navigator.share === 'function'
+      && (typeof navigator.canShare !== 'function' || navigator.canShare({ files: [file] }));
+  }
+
+  private downloadBudgetFile(file: File): void {
+    const url = window.URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    link.click();
+    window.URL.revokeObjectURL(url);
   }
 
 }

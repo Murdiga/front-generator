@@ -10,4 +10,8 @@ export class Budget {
     createBudget(request: BudgetRequest) {
         return this.http.post(`${this.baseUrl}/api/generator/budget`, request, { responseType: 'blob' });
     }
+
+    actuatorHealth() {
+        return this.http.get(`${this.baseUrl}/actuator/health`);
+    }
 }
