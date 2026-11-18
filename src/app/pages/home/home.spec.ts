@@ -44,7 +44,7 @@ describe('Home', () => {
     Object.defineProperty(navigator, 'share', { configurable: true, value: vi.fn() });
     component.request.clientRequest = {
       type: 'PF',
-      clientName: 'Cliente',
+      name: 'Cliente',
       telephoneNumber: '',
       cpf: '12345678901',
     };
@@ -154,13 +154,18 @@ describe('Home', () => {
       companyRequest: {
         companyName: 'Empresa',
         telephoneCompany: '1133334444',
-        companyCnpj: '12345678000199',
+        companyCNPJ: '12345678000199',
       },
       clientRequest: {
         type: 'PJ',
         companyName: 'Cliente',
         telephoneNumber: '11999998888',
         cnpj: '98765432000199',
+      },
+      workInformation: {
+        address: 'Rua Teste',
+        numberAddress: '69',
+        professionals: [{ name: 'Anna', role: 'Arquiteto(a)' }],
       },
       items: [{ itemDescription: 'Material', quantity: 2, itemValue: 10 }],
       labors: [{ laborDescription: 'Serviço', laborValue: 20 }],
@@ -182,8 +187,9 @@ describe('Home', () => {
     modalButtons.find(button => button.textContent?.trim() === 'Apagar')?.click();
 
     expect(component.request).toEqual({
-      companyRequest: { companyName: '', telephoneCompany: '', companyCnpj: null },
-      clientRequest: { type: 'PF', clientName: '', telephoneNumber: '', cpf: null },
+      companyRequest: { companyName: '', telephoneCompany: '', companyCNPJ: null },
+      clientRequest: { type: 'PF', name: '', telephoneNumber: '', cpf: null },
+      workInformation: { address: '', numberAddress: '', professionals: [] },
       items: [],
       labors: [],
       observation: '',
@@ -283,7 +289,7 @@ describe('Home', () => {
     component.onCompanyCnpjInput('12345678000199');
 
     expect(component.companyCnpjInput).toBe('12.345.678/0001-99');
-    expect(component.request.companyRequest.companyCnpj).toBe('12345678000199');
+    expect(component.request.companyRequest.companyCNPJ).toBe('12345678000199');
   });
 
   it('should format client CNPJ for display and keep only digits in the request', () => {
@@ -304,7 +310,7 @@ describe('Home', () => {
     component.onCompanyCnpjInput('ab123456789012');
 
     expect(component.companyCnpjInput).toBe('AB.123.456/7890-12');
-    expect(component.request.companyRequest.companyCnpj).toBe('AB123456789012');
+    expect(component.request.companyRequest.companyCNPJ).toBe('AB123456789012');
   });
 
   it('should accept and uppercase letters in client CNPJ', () => {

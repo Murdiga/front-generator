@@ -1,11 +1,11 @@
 export type CompanyRequest = {
     companyName: string;
     telephoneCompany: string;
-    companyCnpj: string | null;
+    companyCNPJ: string | null;
 };
 
 export type IndividualClient = {
-    clientName: string;
+    name: string;
     telephoneNumber: string;
     cpf: string | null;
 };
@@ -29,9 +29,23 @@ export type LaborRequest = {
     laborValue: number;
 };
 
+export type ProfessionalRole = 'Engenheiro(a)' | 'Arquiteto(a)';
+
+export type ProfessionalRequest = {
+    name: string;
+    role: ProfessionalRole;
+};
+
+export type WorkInformationRequest = {
+    address: string;
+    numberAddress: string;
+    professionals: ProfessionalRequest[];
+};
+
 export type BudgetRequest = {
     companyRequest: CompanyRequest;
     clientRequest: ClientRequest;
+    workInformation: WorkInformationRequest;
     items: ItemRequest[];
     labors: LaborRequest[];
     observation: string;

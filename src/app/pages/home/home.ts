@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BudgetRequest, ItemRequest, LaborRequest } from '../../models/budget-request';
+import { BudgetRequest, ItemRequest, LaborRequest, ProfessionalRequest } from '../../models/budget-request';
 import { CommonModule } from '@angular/common';
 import { Budget } from '../../services/budget';
 import { finalize } from 'rxjs';
@@ -15,6 +15,7 @@ import { ApiWarmup } from '../../services/api-warmup';
 export class Home {
   @ViewChild('itemForm') private itemForm?: ElementRef<HTMLElement>;
   @ViewChild('laborForm') private laborForm?: ElementRef<HTMLElement>;
+  @ViewChild('professionalForm') private professionalForm?: ElementRef<HTMLElement>;
 
   private readonly brazilianAmountFormatter = new Intl.NumberFormat('pt-BR', {
     minimumFractionDigits: 2,
@@ -29,13 +30,18 @@ export class Home {
     companyRequest: {
       companyName: '',
       telephoneCompany: '',
-      companyCnpj: null
+      companyCNPJ: null
     },
     clientRequest: {
       type: 'PF',
-      clientName: '',
+      name: '',
       telephoneNumber: '',
       cpf: null
+    },
+    workInformation: {
+      address: '',
+      numberAddress: '',
+      professionals: []
     },
     items: [],
     labors: [],
@@ -148,7 +154,7 @@ export class Home {
 
   onCompanyCnpjInput(value: string): void {
     const cnpj = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 14);
-    this.request.companyRequest.companyCnpj = cnpj || null;
+    this.request.companyRequest.companyCNPJ = cnpj || null;
     this.companyCnpjInput = this.formatDocumentInput(cnpj, 'cnpj');
   }
 
@@ -279,6 +285,44 @@ export class Home {
     }
   }
 
+  newProfessional: ProfessionalRequest = {
+    name: '',
+    role: 'Engenheiro(a)',
+  };
+  editingProfessionalIndex: number | null = null;
+
+  addProfessional(): void {
+    if (this.editingProfessionalIndex === null) {
+      this.request.workInformation.professionals.push({ ...this.newProfessional });
+    } else {
+      this.request.workInformation.professionals[this.editingProfessionalIndex] = { ...this.newProfessional };
+    }
+    this.cancelProfessionalEdit();
+  }
+
+  editProfessional(index: number): void {
+    this.newProfessional = { ...this.request.workInformation.professionals[index] };
+    this.editingProfessionalIndex = index;
+    this.professionalForm?.nativeElement.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  }
+
+  cancelProfessionalEdit(): void {
+    this.editingProfessionalIndex = null;
+    this.newProfessional = {
+      name: '',
+      role: 'Engenheiro(a)',
+    };
+  }
+
+  removeProfessional(index: number): void {
+    this.request.workInformation.professionals.splice(index, 1);
+    if (this.editingProfessionalIndex === index) {
+      this.cancelProfessionalEdit();
+    } else if (this.editingProfessionalIndex !== null && this.editingProfessionalIndex > index) {
+      this.editingProfessionalIndex--;
+    }
+  }
+
   formatCurrencyInput(value: string): string {
     const digits = value.replace(/\D/g, '');
     if (!digits) {
@@ -309,20 +353,6 @@ export class Home {
     if (this.isProcessing() || !this.apiWarmup.isReady() || this.apiWarmup.isChecking()) {
       return;
     }
-
-    if (this.request.clientRequest.type === 'PF') {
-      if (!this.request.clientRequest.cpf) {
-        alert('CPF é obrigatório para clientes do tipo PF.');
-        return;
-      }
-    }
-
-    if (this.request.clientRequest.type === 'PJ') {
-      if (!this.request.clientRequest.cnpj) {
-        alert('CNPJ é obrigatório para clientes do tipo PJ.');
-        return;
-      }
-    }
     
     this.shareableBudgetFile = null;
     this.isProcessing.set(true);
@@ -332,7 +362,7 @@ export class Home {
       next: blob => {
         this.hasGeneratedBudget.set(true);
         const clientName = this.request.clientRequest.type === 'PF'
-          ? this.request.clientRequest.clientName
+          ? this.request.clientRequest.name
           : this.request.clientRequest.companyName;
         const fileName = `Orçamento_${clientName.replace(/ /g, '_')}.pdf`;
         const file = new File([blob], fileName, { type: 'application/pdf' });
@@ -367,13 +397,18 @@ export class Home {
       companyRequest: {
         companyName: '',
         telephoneCompany: '',
-        companyCnpj: null,
+        companyCNPJ: null,
       },
       clientRequest: {
         type: 'PF',
-        clientName: '',
+        name: '',
         telephoneNumber: '',
         cpf: null,
+      },
+      workInformation: {
+        address: '',
+        numberAddress: '',
+        professionals: [],
       },
       items: [],
       labors: [],
@@ -387,6 +422,7 @@ export class Home {
     this.cpfInput = '';
     this.cancelItemEdit();
     this.cancelLaborEdit();
+    this.cancelProfessionalEdit();
     this.shareableBudgetFile = null;
     this.hasGeneratedBudget.set(false);
     this.isClearConfirmationOpen.set(false);

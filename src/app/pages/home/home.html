@@ -56,7 +56,7 @@
                                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                     <div>
                                         <label for="clientName" class="mb-1 block text-sm font-medium text-slate-700">Nome do cliente</label>
-                                        <input id="clientName" type="text" [(ngModel)]="request.clientRequest.clientName" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                        <input id="clientName" type="text" [(ngModel)]="request.clientRequest.name" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                                     </div>
                                     <div>
                                         <label for="clientTelephone" class="mb-1 block text-sm font-medium text-slate-700">Telefone do cliente</label>
@@ -85,6 +85,52 @@
                                 </div>
                             }
                         }
+                    </div>
+                </section>
+
+                <section class="rounded-xl border border-slate-200 p-4 sm:p-6">
+                    <h2 class="mb-4 text-lg font-semibold text-slate-900">Informações da obra</h2>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div class="sm:col-span-2">
+                            <label for="workAddress" class="mb-1 block text-sm font-medium text-slate-700">Endereço</label>
+                            <input id="workAddress" type="text" [(ngModel)]="request.workInformation.address" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                        <div>
+                            <label for="workAddressNumber" class="mb-1 block text-sm font-medium text-slate-700">Número</label>
+                            <input id="workAddressNumber" type="text" [(ngModel)]="request.workInformation.numberAddress" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                        </div>
+                    </div>
+
+                    <div #professionalForm class="mt-5 scroll-mt-4">
+                        <h3 class="mb-3 text-base font-semibold text-slate-900">Profissionais</h3>
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label for="professionalName" class="mb-1 block text-sm font-medium text-slate-700">Nome</label>
+                                <input id="professionalName" type="text" [(ngModel)]="newProfessional.name" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                            </div>
+                            <div>
+                                <label for="professionalRole" class="mb-1 block text-sm font-medium text-slate-700">Cargo</label>
+                                <select id="professionalRole" [(ngModel)]="newProfessional.role" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                                    <option value="Engenheiro(a)">Engenheiro(a)</option>
+                                    <option value="Arquiteto(a)">Arquiteto(a)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex flex-col items-center gap-2">
+                            <button type="button" class="mx-auto flex min-h-11 w-full max-w-xs items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer" (click)="addProfessional()">{{ editingProfessionalIndex === null ? 'Adicionar profissional' : 'Salvar alterações' }}</button>
+                            <button *ngIf="editingProfessionalIndex !== null" type="button" class="flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 cursor-pointer" (click)="cancelProfessionalEdit()">Cancelar edição</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 max-h-64 space-y-3 overflow-y-auto">
+                        <div *ngFor="let professional of request.workInformation.professionals; let i = index" class="grid grid-cols-1 gap-2 rounded-lg bg-slate-50 p-4 sm:grid-cols-2">
+                            <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Nome:</span> {{professional.name}}</p>
+                            <p class="text-sm text-slate-700"><span class="font-medium text-slate-900">Cargo:</span> {{professional.role}}</p>
+                            <div class="flex items-center justify-center gap-6 text-sm sm:col-span-2 sm:justify-end">
+                                <button type="button" class="min-h-10 rounded px-3 text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 cursor-pointer" (click)="removeProfessional(i)">Excluir</button>
+                                <button type="button" class="min-h-10 rounded px-3 text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 cursor-pointer" (click)="editProfessional(i)">Alterar</button>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
